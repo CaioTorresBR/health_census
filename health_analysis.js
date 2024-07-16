@@ -67,19 +67,27 @@ function addPatient() {
         };
 
         // Data processing loop :
-            //
+            // iterates throug each patient's data in patients[]
         for (const patient of patients) {
         conditionsCount[patient.condition]++;
         genderConditionsCount[patient.gender][patient.condition]++;
         }
 
+        // HTML update :
+            // dinamically updates the html content within the designated report element
         report.innerHTML = `Number of patients: ${numPatients}<br><br>`;
         report.innerHTML += `Conditions Breakdown:<br>`;
+            // conditions breakdown:
+            // lists the counts for each medical condition in the conditionsCount object 
         for (const condition in conditionsCount) {
         report.innerHTML += `${condition}: ${conditionsCount[condition]}<br>`;
         }
 
         report.innerHTML += `<br>Gender-Based Conditions:<br>`;
+
+        // Illustrates counts of each condition categorized by gender
+        // in the genderConditionsCount object, showing the 
+        // distribution of conditions among males and females separately.
         for (const gender in genderConditionsCount) {
         report.innerHTML += `${gender}:<br>`;
         for (const condition in genderConditionsCount[gender]) {
@@ -87,7 +95,8 @@ function addPatient() {
         }
       }
     }
-
+    // event listener :
+        // adds patient details when user clicks the Add Patient button
     addPatientButton.addEventListener("click", addPatient);
 
 }
