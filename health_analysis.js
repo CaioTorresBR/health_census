@@ -35,6 +35,51 @@ function addPatient() {
         document.getElementById("condition").value = "";
     }
 
+    // function works within the web page to retrieve health condition based on user input
+    function searchCondition() {
+        // retrieves value entered into input field (conditionId) and converts the text to lower-case
+        const input = document.getElementById('conditionInput').value.toLowerCase();
+
+        // retrieves HTML element with id 'result' and clears previous result content
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '';
+
+        // fetch request
+        fetch('health_analysis.json')
+            // converts fecthed response into json format
+            .then(response => response.json())
+
+            // handles retrieved json data
+            // searches for a health condition that matches the user input
+            .then(data => {
+                // searches within json data for a health condition whose name matches the entered input
+                const condition = data.conditions.find(item => item.name.toLowerCase() === input);
+
+                // checks for a match condition
+                    // if found, constructs html content to display details about the condition within resultDiv
+                if (condition) {
+                    const symptoms = condition.symptoms.join(', ');
+                    const prevention = condition.prevention.join(', ');
+                    const treatment = condition.treatment;
+
+                    resultDiv.innerHTML += `<h2>${condition.name}</h2>`;
+                    resultDiv.innerHTML += `<img src="${condition.imagesrc}" alt="hjh">`;
+
+                    resultDiv.innerHTML += `<p><strong>Symptoms:</strong> ${symptoms}</p>`;
+                    resultDiv.innerHTML += `<p><strong>Prevention:</strong> ${prevention}</p>`;
+                    resultDiv.innerHTML += `<p><strong>Treatment:</strong> ${treatment}</p>`;  
+                    // if system can't find it, displays corresponding message in resultDiv
+                } else {
+                    resultDiv.innerHTML = 'Condition not found.';
+            }
+            })
+
+            // handles any error that might occur during fetch request or data processing
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = 'An error occurred while fetching data.';
+                });
+        }
 
     // function calculates and constructs an analysis report based 
     // on collected patient data stored in patients[]
@@ -95,10 +140,14 @@ function addPatient() {
         }
       }
     }
-    // event listener :
-        // adds patient details when user clicks the Add Patient button
-    addPatientButton.addEventListener("click", addPatient);
 
 }
+
+// listener activates searchCondition function whet btnSearch is clicked
+btnSearch.addEventListener('click', searchCondition);
+
+// event listener :
+        // adds patient details when user clicks the Add Patient button
+addPatientButton.addEventListener("click", addPatient);
 
 
